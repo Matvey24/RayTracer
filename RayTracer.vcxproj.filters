@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Исходные файлы\utils">
+      <UniqueIdentifier>{f458f04e-983d-4883-ae1e-3c64be171149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\utils">
+      <UniqueIdentifier>{28639338-95e6-47ac-ae18-38089af1d63a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\interfaces">
+      <UniqueIdentifier>{6bfdf09c-124a-4c03-bf27-bb78258e91cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\utils\segments">
+      <UniqueIdentifier>{4d83e60d-cce9-4bca-94ad-430e50c399ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\utils\segments">
+      <UniqueIdentifier>{d68214b9-32c7-4e77-bdb0-ecda3579acbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\objects">
+      <UniqueIdentifier>{3443bc6e-5ba1-413b-8410-c82e2d86af7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\objects\simple">
+      <UniqueIdentifier>{96ada8e9-4041-4c97-a18a-073984637db8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\objects\tools">
+      <UniqueIdentifier>{2787c634-d2fe-437a-8c9e-1a3867779890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\objects">
+      <UniqueIdentifier>{56abe5ff-19cd-4182-8cb4-0dd35ec3f52c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\objects\tools">
+      <UniqueIdentifier>{b7aea983-0454-4a0b-923e-0b7894200032}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\objects\simple">
+      <UniqueIdentifier>{af79fec8-1714-4fb2-b914-0515f6607ff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\objects\lights">
+      <UniqueIdentifier>{44f6ac4a-1668-46ae-9106-8aed24132863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\materials">
+      <UniqueIdentifier>{ae839cd4-ff6a-407e-b541-c64f40a4d93a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\objects\lights">
+      <UniqueIdentifier>{abc0cce8-112b-436f-82cd-95ecb794f034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\materials">
+      <UniqueIdentifier>{143a08a9-02e0-49d1-a984-bc48f08a9a54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\objects\complex">
+      <UniqueIdentifier>{6b237233-c4b4-45db-b67a-7662b34d7689}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\objects\complex">
+      <UniqueIdentifier>{4a33092d-86f3-4a57-85b4-814b1eb271fb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RayTracer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="DevelopmentKit.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="SPoint.cpp">
+      <Filter>Исходные файлы\utils\segments</Filter>
+    </ClCompile>
+    <ClCompile Include="Segment_p.cpp">
+      <Filter>Исходные файлы\utils\segments</Filter>
+    </ClCompile>
+    <ClCompile Include="Segments.cpp">
+      <Filter>Исходные файлы\utils\segments</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectModel.cpp">
+      <Filter>Исходные файлы\objects\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Исходные файлы\objects\simple</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Исходные файлы\objects\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>Исходные файлы\objects\simple</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstructableGeometry.cpp">
+      <Filter>Исходные файлы\objects\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Intersection.cpp">
+      <Filter>Исходные файлы\objects\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ComplexModel.cpp">
+      <Filter>Исходные файлы\objects\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorMaterial.cpp">
+      <Filter>Исходные файлы\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="Rectangle.cpp">
+      <Filter>Исходные файлы\objects\complex</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>Исходные файлы\objects\complex</Filter>
+    </ClCompile>
+    <ClCompile Include="HalfVolume.cpp">
+      <Filter>Исходные файлы\objects\simple</Filter>
+    </ClCompile>
+    <ClCompile Include="Mirror.cpp">
+      <Filter>Исходные файлы\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="Tetrahedron.cpp">
+      <Filter>Исходные файлы\objects\complex</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Исходные файлы\objects\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Subtraction.cpp">
+      <Filter>Исходные файлы\objects\tools</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Color.h">
+      <Filter>Файлы заголовков\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Файлы заголовков\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Файлы заголовков\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Файлы заголовков\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfacePoint.h">
+      <Filter>Файлы заголовков\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialModel.h">
+      <Filter>Файлы заголовков\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="OperatorModel.h">
+      <Filter>Файлы заголовков\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="DevelopmentKit.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="SPoint.h">
+      <Filter>Файлы заголовков\utils\segments</Filter>
+    </ClInclude>
+    <ClInclude Include="Segment_p.h">
+      <Filter>Файлы заголовков\utils\segments</Filter>
+    </ClInclude>
+    <ClInclude Include="Segments.h">
+      <Filter>Файлы заголовков\utils\segments</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectModel.h">
+      <Filter>Файлы заголовков\objects\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Файлы заголовков\objects\simple</Filter>
+    </ClInclude>
+    <ClInclude Include="LightModel.h">
+      <Filter>Файлы заголовков\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Файлы заголовков\objects\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Файлы заголовков\objects\simple</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstructableGeometry.h">
+      <Filter>Файлы заголовков\objects\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Intersection.h">
+      <Filter>Файлы заголовков\objects\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ComplexModel.h">
+      <Filter>Файлы заголовков\objects\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorMaterial.h">
+      <Filter>Файлы заголовков\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="Rectangle.h">
+      <Filter>Файлы заголовков\objects\complex</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>Файлы заголовков\objects\complex</Filter>
+    </ClInclude>
+    <ClInclude Include="HalfVolume.h">
+      <Filter>Файлы заголовков\objects\simple</Filter>
+    </ClInclude>
+    <ClInclude Include="Mirror.h">
+      <Filter>Файлы заголовков\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="Tetrahedron.h">
+      <Filter>Файлы заголовков\objects\complex</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Файлы заголовков\objects\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Subtraction.h">
+      <Filter>Файлы заголовков\objects\tools</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RayTracer.rc">
+      <Filter>Файлы ресурсов</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

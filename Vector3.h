@@ -12,7 +12,9 @@ public:
 	double len2() const;
 	double len() const;
 	double scl(Vector3 oth) const;
+	void mult(Vector3 oth);
 	void norm();
+	bool isZero();
 	friend const Vector3 operator-(const Vector3& a);
 };
 Vector3 operator+(Vector3 a, Vector3 b);

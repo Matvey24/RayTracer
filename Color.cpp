@@ -12,8 +12,8 @@ Color Color::reflect(Color oth) const{
 bool Color::isZero() const {
 	return b == 0 && g == 0 && r == 0;
 }
-double fmin(double a, double b) {
-	return a > b ? b : a;
+inline double fmin(double a, double b) {
+	return (a < b) ? a : b;
 }
 int Color::toRGB() const {
 	RGB c;

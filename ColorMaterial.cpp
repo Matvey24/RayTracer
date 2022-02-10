@@ -1,6 +1,6 @@
 #include "ColorMaterial.h"
-ColorMaterial::ColorMaterial(unsigned color):
-main_c(color){}
+ColorMaterial::ColorMaterial(unsigned color):main_c(color){}
+ColorMaterial::ColorMaterial(Color &c):main_c(c){}
 ColorMaterial::ColorMaterial(double reflective, unsigned color) :
 	main_ref(reflective), main_c(color) {}
 double ColorMaterial::reflective(const Vector3& inter){

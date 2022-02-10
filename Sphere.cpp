@@ -1,6 +1,6 @@
 #include "Sphere.h"
 Sphere::Sphere(double x, double y, double z, double rad, MaterialModel* mm) :
-	ObjectModel(x, y, z, mm), rad2(rad* rad) {}
+	MaterialObject(x, y, z, mm), rad2(rad* rad) {}
 void Sphere::getNorm(Vector3& internal) {}
 SPoint Sphere::getDistance(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit) {
     double k1 = dir.len2();

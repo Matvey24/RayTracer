@@ -1,6 +1,6 @@
 #pragma once
-#include "ObjectModel.h"
-class Wall:public ObjectModel
+#include "MaterialObject.h"
+class Wall:public MaterialObject
 {
 private:
 	double hwidth;

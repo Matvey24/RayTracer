@@ -1,10 +1,12 @@
 #pragma once
+#ifndef SURFACE_POINT_
+#define SURFACE_POINT_
 #include "Matrix.h"
-#include "MaterialModel.h"
-#include <corecrt_math_defines.h>
+#include "Color.h"
 class SurfacePoint {
 public:
 	bool intersects = false;
+	bool self_lighting = false;
 	Vector3 position;
 	Vector3 norm;
 	double refraction = 0;
@@ -12,3 +14,4 @@ public:
 	double reflective = 0;
 	Color reflection;
 };
+#endif

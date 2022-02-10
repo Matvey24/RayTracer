@@ -24,6 +24,14 @@ void Vector3::norm() {
 	y /= len;
 	z /= len;
 }
+void Vector3::mult(Vector3 oth) {
+	x *= oth.x;
+	y *= oth.y;
+	z *= oth.z;
+}
+bool Vector3::isZero() {
+	return x == 0 && y == 0 && z == 0;
+}
 const Vector3 operator-(const Vector3& a) {
 	return Vector3(-a.x, -a.y, -a.z);
 }

@@ -1,6 +1,5 @@
 #include "Scene.h"
-Scene::Scene() {
-	spaceColor = Color(0.4, 0.4, 1);
+Scene::Scene(MaterialModel* space):space(space) {
 	mod_cap = 10;
 	models = (OperatorModel**)malloc(sizeof(OperatorModel*) * mod_cap);
 	mod_len = 0;
@@ -12,48 +11,69 @@ Scene::~Scene() {
     free(models);
     free(lights);
 }
-Color Scene::getColorOf(Vector3& pos, Vector3& dir, size_t depth, double scale, DevelopmentKit &kit) const {
+Color Scene::getColorOf(Vector3& pos, Vector3& dir, DevelopmentKit &kit) const {
 	dir.norm();
     SurfacePoint surf = intersect(pos, dir, kit);
     if(!surf.intersects)
-	    return spaceColor;
-    if (depth == 0)
-        surf.reflective = 0;
+	    return space->reflection(dir);
+    if (surf.self_lighting)
+        return surf.reflection;
     surf.norm.norm();
     Color result;
     double scl = dir.scl(surf.norm);
-    //reflections
-    if (surf.reflective != 0) {
-        double reflective = pow(surf.reflective, (scl < 0) ? -scl : scl);
-        double scale2 = scale * reflective;
-        if (scale2 >= 0.01) {
+    double reflective = pow(surf.reflective, (scl < 0) ? -scl : scl);
+    if (kit.depth != 0) {
+#ifdef FULL_REFLECTIONS
+        int discretization = 11 * (1 - reflective);
+        double scale2, delta;
+        do {
+            discretization--;
+            delta = (double)1 / (discretization * 2 * discretization);
+            scale2 = scale * delta;
+        } while (discretization > 3 && scale2 < 0.01);
+        if (discretization < 4) {
             Vector3 dir2(dir - surf.norm * (2 * scl));
             Vector3 pos2(surf.position + dir2 * diff);
-            result += getColorOf(pos2, dir2, depth - 1, scale2, kit) * reflective;
+            result += getColorOf(pos2, dir2, depth - 1, scale, kit) * surf.reflective;
         }
-    }
-#ifdef FULL_REFLECTIONS
-    if(surf.reflective != 1){
-        int discretization = 5;
-        double newscale = scale / discretization / 2 / discretization;
+        else {
+            Matrix mat;
+            Vector3 dir2(dir - surf.norm * (2 * scl));
+            for (int i = 0, m = discretization * 2; i < m; ++i) {
+                Matrix vert_mat;
+                    vert_mat.setRotZ(Vector2(M_PI * i / m));
+                    for (int j = 0; j < discretization; ++j) {
+                        mat.setRotY(Vector2(2 * M_PI * (1 - pow(j / discretization, 1 / (1 - reflective)))));
+                        mat = mat * vert_mat;
+                        Vector3 dir3(dir2);
+                        mat.transform(dir3);
+                        if (dir3.scl(surf.norm) < 0)
+                            continue;
+                        Vector3 pos2(surf.position + dir3 * diff);
+                        result += getColorOf(pos2, dir3, depth - 1, scale2, kit) * surf.reflective * delta;
 
-        Matrix mat;
-        Vector3 dir2(dir - surf.norm * (2 * scl));
-        for (int i = 0, m = discretization * 2; i < m; ++i) {
-            Matrix vert_mat;
-            vert_mat.setRotZ(Vector2(M_PI * i / m));
-            for (int j = 0; j < discretization; ++j) {
-                mat.setRotY(Vector2(2 * M_PI * j / discretization));
-                mat = mat * vert_mat;
-                Vector3 dir3(dir2);
-                mat.transform(dir3);
-                Vector3 pos2(surf.position + dir3 * diff);
-                result += getColorOf(pos2, dir3, depth - 1, newscale, kit);
-                
+                    }
             }
         }
-    }
+        
 #else
+        //reflections
+        if (surf.reflective != 0) {
+            double scale2 = kit.scale * reflective;
+            if (scale2 >= 0.01) {
+                Vector3 dir2(dir - surf.norm * (2 * scl));
+                Vector3 pos2(surf.position + dir2 * diff);
+                kit.depth -= 1;
+                double scale = kit.scale;
+                kit.scale = scale2;
+                result += getColorOf(pos2, dir2, kit) * reflective;
+                kit.scale = scale;
+                kit.depth += 1;
+            }
+        }
+#endif
+    }
+    result += surf.reflection * surf.self_lighting * (1 - reflective);
     //lights
     if (surf.reflective != 1) {
         for (size_t i = 0; i < lights_len; ++i) {
@@ -71,9 +91,7 @@ Color Scene::getColorOf(Vector3& pos, Vector3& dir, size_t depth, double scale, 
                 result += c.reflect(surf.reflection) * (power * (1 - surf.reflective));
             }
         }
-        result += surf.reflection * env_light_pow * (1 - surf.reflective);
     }
-#endif
     return result;
 }
 void Scene::addModel(OperatorModel& m) {
@@ -105,7 +123,7 @@ SurfacePoint Scene::intersect(const Vector3& pos, const Vector3& dir, Developmen
     OperatorModel* om;
     SPoint sp = getNearestModel(models, mod_len, pos, dir, kit, &om);
     if (sp.model != NULL)
-        return sp.model->getPoint(pos, dir, sp.pos);
+        return sp.model->getPoint(pos, dir, sp.pos, kit);
     return SurfacePoint();
 }
 bool Scene::intersects(const Vector3& pos, const Vector3& dir, double max_len, DevelopmentKit &kit) const {

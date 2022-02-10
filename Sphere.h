@@ -1,6 +1,6 @@
 #pragma once
-#include "ObjectModel.h"
-class Sphere:public ObjectModel
+#include "MaterialObject.h"
+class Sphere:public MaterialObject
 {
 private:
 	double rad2;

@@ -1,6 +1,6 @@
 #include "HalfVolume.h"
 HalfVolume::HalfVolume(double x, double y, double z,  MaterialModel* mm) :
-	ObjectModel(x, y, z, mm) {}
+	MaterialObject(x, y, z, mm) {}
 void HalfVolume::getNorm(Vector3& internal) {
 	internal.set(-1, 0, 0);
 }

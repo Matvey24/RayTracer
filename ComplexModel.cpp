@@ -8,16 +8,6 @@ ComplexModel::ComplexModel(double x, double y, double z, double rad, OperatorMod
 	sp(x, y, z, rad, NULL), model_count(1) {
 	models[0] = a;
 }
-SurfacePoint ComplexModel::intersect(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit) {
-	SPoint dist = sp.getDistance(pos, dir, kit);
-	if (dist.pos != dist.pos)
-		return SurfacePoint();
-	OperatorModel* om;
-	dist = getNearestModel(models, model_count, pos, dir, kit, &om);
-	if (dist.model == NULL)
-		return SurfacePoint();
-	return dist.model->getPoint(pos, dir, dist.pos);
-}
 Segments* ComplexModel::intersectAll(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit) {
 	SPoint dist = sp.getDistance(pos, dir, kit);
 	if (dist.pos != dist.pos)
@@ -44,4 +34,10 @@ void ComplexModel::rotate(const Vector3& at, const Matrix& m) {
 	sp.rotate(at, m);
 	for (size_t i = 0; i < model_count; ++i)
 		models[i]->rotate(at, m);
+}
+Matrix ComplexModel::getRot() {
+	return sp.rot;
+}
+Vector3 ComplexModel::getPos() {
+	return sp.center;
 }

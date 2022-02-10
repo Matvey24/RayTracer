@@ -1,6 +1,6 @@
 #include "Wall.h"
 Wall::Wall(double x, double y, double z, double hwidth, MaterialModel* mm):
-	ObjectModel(x, y, z, mm), hwidth(hwidth) {}
+	MaterialObject(x, y, z, mm), hwidth(hwidth) {}
 void Wall::getNorm(Vector3& internal) {
 	internal.y = 0;
 	internal.z = 0;

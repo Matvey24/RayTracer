@@ -3,7 +3,7 @@ class ObjectModel;
 class SPoint
 {
 public:
-	ObjectModel *model;
+	ObjectModel*model;
 	double pos;
 	SPoint(ObjectModel* model, double pos);
 	SPoint(const SPoint& oth);

@@ -16,6 +16,23 @@ void Matrix::transform(Vector3& vec) const{
     z = c1 * vec.x + c2 * vec.y + c3 * vec.z;
     vec.set(x, y, z);
 }
+void Matrix::set(const Matrix& oth) {
+    a1 = oth.a1;
+    a2 = oth.a2;
+    a3 = oth.a3;
+    b1 = oth.b1;
+    b2 = oth.b2;
+    b3 = oth.b3;
+    c1 = oth.c1;
+    c2 = oth.c2;
+    c3 = oth.c3;
+}
+double Matrix::det() const {
+    return a1 * b2 * c3 + a2 * b3 * c1 + a3 * b1 * c2 - a1 * b3 * c2 - a2 * b1 * c3 - a3 * b2 * c1;
+}
+void Matrix::mult(double val){
+    set(a1 * val, a2 * val, a3 * val, b1 * val, b2 * val, b3 * val, c1 * val, c2 * val, c3 * val);
+}
 void Matrix::transformBack(Vector3& vec) const{
     double x, y, z;
     x = a1 * vec.x + b1 * vec.y + c1 * vec.z;
@@ -48,6 +65,22 @@ void Matrix::setRotY(Vector2 ang) {
 void Matrix::setRotZ(Vector2 ang) {
     set(ang.x, -ang.y, 0, ang.y, ang.x, 0, 0, 0, 1);
 }
+void Matrix::setRotE(Vector3 at, Vector2 ang) {
+    a1 = (1 - ang.x) * at.x * at.x + ang.x;
+    a2 = (1 - ang.x) * at.x * at.y - ang.y * at.z;
+    a3 = (1 - ang.x) * at.x * at.z + ang.y * at.y;
+    b1 = (1 - ang.x) * at.y * at.x + ang.y * at.z;
+    b2 = (1 - ang.x) * at.y * at.y + ang.x;
+    b3 = (1 - ang.x) * at.y * at.z - ang.y * at.x;
+    c1 = (1 - ang.x) * at.z * at.x - ang.y * at.y;
+    c2 = (1 - ang.x) * at.z * at.y + ang.y * at.x;
+    c3 = (1 - ang.x) * at.z * at.z + ang.x;
+}
+void Matrix::setRotOf(Vector3 ang) {
+    double l = ang.len();
+    ang *= 1 / l;
+    setRotE(ang, Vector2(l));
+}
 void Matrix::reverse() {
     double i = a2;
     a2 = b1;
@@ -70,4 +103,10 @@ Matrix operator*(Matrix a, Matrix b) {
         a.c1 * b.a1 + a.c2 * b.b1 + a.c3 * b.c1,
         a.c1 * b.a2 + a.c2 * b.b2 + a.c3 * b.c2,
         a.c1 * b.a3 + a.c2 * b.b3 + a.c3 * b.c3);
+}
+Matrix operator-(Matrix a, Matrix b) {
+    return Matrix(
+        a.a1 - b.a1, a.a2 - b.a2, a.a3 - b.a3,
+        a.b1 - b.b1, a.b2 - b.b2, a.b3 - b.b3, 
+        a.c1 - b.c1, a.c2 - b.c2, a.c3 - b.c3);
 }

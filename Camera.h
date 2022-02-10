@@ -1,6 +1,6 @@
 #pragma once
 #include"Scene.h"
-#include<stdio.h>
+#include"ImageBMP.h"
 struct THREAD_DATA;
 void runRender(THREAD_DATA &td);
 void runRender360(THREAD_DATA &td);
@@ -13,17 +13,17 @@ public:
 	double FOV;
 	size_t max_depth;
 private:
-	size_t width, height;
 	double table_dist;
-	int** table = NULL;
-	char* bmp_buf;
+	ImageBMP* image;
 public:
 	Camera(Scene& scene, size_t width, size_t height);
 	~Camera();
 	void render();
 	void render360();
-	void save(FILE* file);
+	void save(FILE* file) const;
+	void save(const char* file_name) const;
 	void resetTable(size_t width, size_t height);
+	void rotate(const Vector3& at, const Matrix& m);
 private:
 	friend void runRender(THREAD_DATA &td);
 	friend void runRender360(THREAD_DATA &td);

@@ -1,5 +1,7 @@
 #pragma once
 #include<math.h>
+#include <corecrt_math_defines.h>
+#include <corecrt_math.h>
 class Vector2
 {
 public:

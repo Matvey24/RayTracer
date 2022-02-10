@@ -9,10 +9,11 @@ protected:
 public:
 	ComplexModel(double x, double y, double z, double rad, size_t models_count, OperatorModel* a[]);
 	ComplexModel(double x, double y, double z, double rad, OperatorModel* a);
-	SurfacePoint intersect(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit);
 	Segments* intersectAll(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit);
 	SPoint getDistance(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit);
 	void translate(const Vector3& vec);
 	void rotate(const Vector3& at, const Matrix& m);
+	Matrix getRot();
+	Vector3 getPos();
 };
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "ObjectModel.h"
-class HalfVolume:public ObjectModel
+#include "MaterialObject.h"
+class HalfVolume:public MaterialObject
 {
 	
 public:

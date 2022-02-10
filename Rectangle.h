@@ -1,12 +1,12 @@
 #pragma once
-#include "ComplexModel.h"
-#include "Wall.h"
-#include "Intersection.h"
-class Rectangle:public ComplexModel
+#include "MaterialObject.h"
+class Rectangle: public MaterialObject
 {
 public:
-	Wall ud, lr, fb;
-	Intersection in;
+	double w, h, d;
 	Rectangle(double x, double y, double z, double w, double h, double d, MaterialModel* mm);
+	void getNorm(Vector3& internal);
+	Segments* intersectAll(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit);
+	SPoint getDistance(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit);
 };
 

@@ -115,3 +115,6 @@ SPoint *Segments::getFirstActive() {
     }
     return NULL;
 }
+SPoint* Segments::getFirst() {
+    return &s[0].s;
+}

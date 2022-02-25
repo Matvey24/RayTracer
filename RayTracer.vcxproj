@@ -153,6 +153,8 @@
     <ClCompile Include="HardBody.cpp" />
     <ClCompile Include="ImageBMP.cpp" />
     <ClCompile Include="Intersection.cpp" />
+    <ClCompile Include="LightingMaterial.cpp" />
+    <ClCompile Include="MandelBulb.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Mirror.cpp" />
     <ClCompile Include="MaterialObject.cpp" />
@@ -189,7 +191,9 @@
     <ClInclude Include="HardBody.h" />
     <ClInclude Include="ImageBMP.h" />
     <ClInclude Include="Intersection.h" />
+    <ClInclude Include="LightingMaterial.h" />
     <ClInclude Include="LightModel.h" />
+    <ClInclude Include="MandelBulb.h" />
     <ClInclude Include="MaterialModel.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mirror.h" />

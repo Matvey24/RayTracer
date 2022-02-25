@@ -17,6 +17,7 @@ SurfacePoint MaterialObject::getPoint(const Vector3& pos, const Vector3& dir, do
     saveTo.refraction = mm->refraction;
     saveTo.transparency = mm->transparency;
     saveTo.reflective = mm->reflective(tmp);
+    saveTo.self_lighting = mm->self_lighting;
     if (mm->improved) {
         Vector3 dir2(dir);
         rot.transform(dir2);

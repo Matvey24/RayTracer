@@ -5,6 +5,7 @@
 class MaterialModel {
 public:
 	bool improved = false;
+	bool self_lighting = false;
 	double refraction = 0;
 	Color transparency;
 	virtual double reflective(const Vector3& inter) = 0;

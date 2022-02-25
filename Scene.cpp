@@ -1,4 +1,5 @@
 #include "Scene.h"
+//#define FULL_REFLECTIONS
 Scene::Scene(MaterialModel* space):space(space) {
 	mod_cap = 10;
 	models = (OperatorModel**)malloc(sizeof(OperatorModel*) * mod_cap);
@@ -21,76 +22,96 @@ Color Scene::getColorOf(Vector3& pos, Vector3& dir, DevelopmentKit &kit) const {
     surf.norm.norm();
     Color result;
     double scl = dir.scl(surf.norm);
-    double reflective = pow(surf.reflective, (scl < 0) ? -scl : scl);
-    if (kit.depth != 0) {
+    if (scl > 0) {
+        surf.norm = -surf.norm;
+        scl = -scl;
+    }
+    double reflective = pow(surf.reflective, -scl);
+    double diffuse = 1 - reflective;
+    if (reflective * kit.scale < diffuse_imp) {
+        diffuse = 1;
+        reflective = 0;
+    }
+    double reflect_scale = kit.scale * reflective;
+    double diffuse_scale = kit.scale * (1 - reflective);
+    if (surf.self_lighting)
+        return surf.reflection;
+    else if (kit.depth != 0) {
 #ifdef FULL_REFLECTIONS
-        int discretization = 11 * (1 - reflective);
-        double scale2, delta;
-        do {
-            discretization--;
-            delta = (double)1 / (discretization * 2 * discretization);
-            scale2 = scale * delta;
-        } while (discretization > 3 && scale2 < 0.01);
-        if (discretization < 4) {
-            Vector3 dir2(dir - surf.norm * (2 * scl));
-            Vector3 pos2(surf.position + dir2 * diff);
-            result += getColorOf(pos2, dir2, depth - 1, scale, kit) * surf.reflective;
-        }
-        else {
-            Matrix mat;
-            Vector3 dir2(dir - surf.norm * (2 * scl));
-            for (int i = 0, m = discretization * 2; i < m; ++i) {
-                Matrix vert_mat;
-                    vert_mat.setRotZ(Vector2(M_PI * i / m));
-                    for (int j = 0; j < discretization; ++j) {
-                        mat.setRotY(Vector2(2 * M_PI * (1 - pow(j / discretization, 1 / (1 - reflective)))));
-                        mat = mat * vert_mat;
-                        Vector3 dir3(dir2);
-                        mat.transform(dir3);
-                        if (dir3.scl(surf.norm) < 0)
-                            continue;
-                        Vector3 pos2(surf.position + dir3 * diff);
-                        result += getColorOf(pos2, dir3, depth - 1, scale2, kit) * surf.reflective * delta;
+        int disc = diffuse_scale / diffuse_imp;
+        if (disc == 0)
+            disc = 1;
+        int height = (int)sqrt(disc);
+        if(height == 0)
+            height = 1;
+        int width = disc / height;
+        disc = height * width;
 
-                    }
+
+        double cv = diffuse / disc;
+
+        double scale = kit.scale;
+        kit.scale = diffuse_scale / disc;
+        kit.depth -= 1;
+        Matrix m;
+        Vector3 dir2(surf.norm);
+        dir2 = dir2 * Vector3(1, 0, 0);
+        if (dir2.isZero())
+            dir2.set(0, 1, 0);
+        else
+            dir2.norm();
+        m.setRotE(dir2, Vector2(surf.norm.x, sqrt(1 - surf.norm.x * surf.norm.x)));
+        for (int h = 0; h < height; ++h) {
+            for (int w = 0; w < width; ++w) {
+                double cosphi = (rand() / 32768. * (1 - min_surf_ang) + min_surf_ang + h) / height;
+                double sinphi = sqrt(1 - cosphi * cosphi);
+                double psi = (rand() / 32768. * (1 - min_surf_ang) + min_surf_ang + w) * 2 * M_PI / width;
+                Vector3 dir2(cosphi, sinphi * sin(psi), sinphi * cos(psi));
+                m.transformBack(dir2);
+                Vector3 pos2(surf.position + dir2 * diff);
+                result += surf.reflection.reflect(getColorOf(pos2, dir2, kit)) * cv;
             }
         }
-        
+        kit.scale = reflect_scale;
+        if (kit.scale >= diffuse_imp) {
+            dir2.set(dir - surf.norm * (2 * scl));
+            Vector3 pos2(surf.position + dir2 * diff);
+            result += getColorOf(pos2, dir2, kit) * reflective;
+        }
+        kit.depth += 1;
+        kit.scale = scale;
 #else
         //reflections
-        if (surf.reflective != 0) {
-            double scale2 = kit.scale * reflective;
-            if (scale2 >= 0.01) {
-                Vector3 dir2(dir - surf.norm * (2 * scl));
-                Vector3 pos2(surf.position + dir2 * diff);
-                kit.depth -= 1;
-                double scale = kit.scale;
-                kit.scale = scale2;
-                result += getColorOf(pos2, dir2, kit) * reflective;
-                kit.scale = scale;
-                kit.depth += 1;
+        if (reflective != 0) {
+            double scale = kit.scale;
+            kit.scale = reflect_scale;
+            kit.depth -= 1;
+            Vector3 dir2(dir - surf.norm * (2 * scl));
+            Vector3 pos2(surf.position + dir2 * diff);
+            result += getColorOf(pos2, dir2, kit) * reflective;
+            kit.depth += 1;
+            kit.scale = scale;
+        }
+        //lights
+        if (reflective != 1) {
+            for (size_t i = 0; i < lights_len; ++i) {
+                Vector3 d(surf.position);
+                Vector3 p(d);
+                double distance = lights[i]->getDistance(d);
+                d.norm();
+                p += d * diff;
+                if (!intersects(p, d, distance, kit)) {
+                    Color c = lights[i]->getColor();
+                    double power = lights[i]->getPower(distance);
+                    power *= surf.norm.scl(d);
+                    if (power < 0)
+                        power = -power;
+                    result += surf.reflection.reflect(c) * (power * diffuse_scale);
+                }
             }
         }
+        result += surf.reflection * (env_light_pow * diffuse_scale);
 #endif
-    }
-    result += surf.reflection * surf.self_lighting * (1 - reflective);
-    //lights
-    if (surf.reflective != 1) {
-        for (size_t i = 0; i < lights_len; ++i) {
-            Vector3 d(surf.position);
-            Vector3 p(d);
-            double distance = lights[i]->getDistance(d);
-            d.norm();
-            p += d * diff;
-            if (!intersects(p, d, distance, kit)) {
-                Color c = lights[i]->getColor();
-                double power = lights[i]->getPower(distance);
-                power *= surf.norm.scl(d);
-                if (power < 0)
-                    power = -power;
-                result += c.reflect(surf.reflection) * (power * (1 - surf.reflective));
-            }
-        }
     }
     return result;
 }

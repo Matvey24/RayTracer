@@ -2,19 +2,24 @@
 #include "strsafe.h"
 #include "tchar.h"
 #include "windows.h"
+RTL_CRITICAL_SECTION* sect;
 Camera::Camera(Scene& scene, size_t width, size_t height):scene(scene), image(NULL) {
 	rot.setPrimary();
 	FOV = 60;
-	max_depth = 100;
+	max_depth = 10;
 	resetTable(width, height);
+	sect = new RTL_CRITICAL_SECTION;
+	InitializeCriticalSection(sect);
 }
 Camera::~Camera() {
 	delete(image);
+	DeleteCriticalSection(sect);
+	delete(sect);
 }
 struct THREAD_DATA {
 	void (*func)(THREAD_DATA&);
 	Camera* c;
-	size_t start, end;
+	size_t line;
 };
 DWORD WINAPI worker(LPVOID args) {
 	THREAD_DATA td = *((THREAD_DATA*)args);
@@ -27,8 +32,20 @@ void Camera::rotate(const Vector3& at, const Matrix& m) {
 	m.transformBack(tmp);
 	pos = tmp + at;
 }
-void executeParallel(Camera *cam, void func(THREAD_DATA&), size_t size) {
-	const int tc = 4;
+void executeParallel(Camera *cam, void func(THREAD_DATA&)) {
+#ifdef _DEBUG
+	const int tc = 1;
+#else
+	int num = 8;
+	{
+	//	char* chars;
+	//	size_t count = 1;
+		//_getenv_s(&chars, &count, "NUMBER_OF_PROCESSORS");
+	//	sscanf(chars, "%d", &num);
+	//	free(chars);
+	}
+	const int tc = num;
+#endif
 	THREAD_DATA* td = (THREAD_DATA*)malloc(sizeof(THREAD_DATA) * tc);
 	HANDLE* h = (HANDLE*)malloc(sizeof(HANDLE) * tc);
 	if (h == NULL) {
@@ -38,8 +55,6 @@ void executeParallel(Camera *cam, void func(THREAD_DATA&), size_t size) {
 	}
 	for (size_t i = 0; i < tc; ++i) {
 		td[i].c = cam;
-		td[i].start = size * i / tc;
-		td[i].end = size * (i + 1) / tc;
 		td[i].func = func;
 		DWORD dw;
 		h[i] = CreateThread(
@@ -59,10 +74,12 @@ void executeParallel(Camera *cam, void func(THREAD_DATA&), size_t size) {
 }
 void Camera::render() {
 	table_dist = image->width / tan(FOV / 360 * M_PI) / 2;
-	executeParallel(this, runRender, image->width * image->height);
+	work_count = image->width;
+	executeParallel(this, runRender);
 }
 void Camera::render360() {
-	executeParallel(this, runRender360, image->height);
+	work_count = image->width;
+	executeParallel(this, runRender360);
 }
 void Camera::save(FILE* file) const {
 	image->save(file);
@@ -82,33 +99,42 @@ void Camera::resetTable(size_t width, size_t height) {
 		delete(image);
 	image = new ImageBMP(width, height);
 }
+int Camera::getWork(THREAD_DATA& td) {
+	EnterCriticalSection(sect);
+	td.line = work_id;
+	if(work_id != work_count)
+		work_id++;
+	LeaveCriticalSection(sect);
+	return work_id != work_count;
+}
 void runRender(THREAD_DATA &td) {
 	Camera& c = *td.c;
-	size_t start_pixel = td.start, end_pixel = td.end;
 	DevelopmentKit kit;
 	kit.scene = &c.scene;
-	size_t width = c.image->width, height = c.image->height;
 	ImageBMP* im = c.image;
-	for (size_t i = start_pixel; i < end_pixel; ++i) {
-		size_t y = i / width;
-		size_t x = i % width;
-		Vector3 pos(c.pos);
-		Vector3 dir(c.table_dist, height / (double)2 - y, width / (double)2 - x);
-		c.rot.transformBack(dir);
-		kit.depth = c.max_depth;
-		kit.scale = 1;
-		Color col = c.scene.getColorOf(pos, dir, kit);
-		im->set((unsigned)x, (unsigned)y, col.toRGB());
+	size_t width = im->width, height = im->height;
+	while (c.getWork(td)) {
+		double dirx = width / 2. - td.line;
+		for (size_t y = 0; y < height; ++y) {
+			Vector3 pos(c.pos);
+			Vector3 dir(c.table_dist, height / 2. - y, dirx);
+			c.rot.transformBack(dir);
+			kit.depth = c.max_depth;
+			kit.scale = 1;
+			Color col = c.scene.getColorOf(pos, dir, kit);
+			im->set((unsigned)td.line, (unsigned)y, col.toRGB());
+		}
 	}
 }
 void runRender360(THREAD_DATA &td) {
 	Camera& c = *td.c;
-	size_t start_line = td.start;
-	size_t end_line = td.end;
 	DevelopmentKit kit;
+	kit.scene = &c.scene;
 	Matrix m;
-	size_t width = c.image->width;
-	size_t height = c.image->height;
+	size_t width = c.image->width, height = c.image->height;
+
+	size_t start_line = td.line;
+	size_t end_line = 0;
 	for (size_t y = start_line; y < end_line; ++y) {
 		Vector2 vert_ang(M_PI * y / height);
 		size_t d = 1;
@@ -124,7 +150,7 @@ void runRender360(THREAD_DATA &td) {
 		vert_ang.set(-vert_ang.y, vert_ang.x);
 		for (size_t x = 0; x < width; x += d) {
 			Vector3 dir(vert_ang.x, vert_ang.y, 0);
-			m.setRotY(Vector2(2 * M_PI * (x + (d / (double)2)) / width));
+			m.setRotY(Vector2(2 * M_PI * (x + (d / 2.)) / width));
 			m.transform(dir);
 			Vector3 pos(c.pos);
 			c.rot.transformBack(dir);

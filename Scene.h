@@ -13,10 +13,13 @@ private:
 	size_t mod_cap;
 	MaterialModel* space;
 public:
-	const double diff = 0.00000001;
+	const double diff = 0.001;
+	const double min_surf_ang = 0.001;
+	const double diffuse_imp = 1 / 1000.;
+
 	size_t lights_len;
 	LightModel** lights;
-	double env_light_pow = 0.1;
+	double env_light_pow = 0.2;
 	Scene(MaterialModel* space);
 	~Scene();
 	Color getColorOf(Vector3& pos, Vector3& dir, DevelopmentKit &kit) const;

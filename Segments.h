@@ -17,5 +17,6 @@ public:
 	bool isEmpty();
 	void add(Segment_p& p);
 	SPoint* getFirstActive();
+	SPoint* getFirst();
 };
 

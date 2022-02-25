@@ -15,6 +15,8 @@ public:
 private:
 	double table_dist;
 	ImageBMP* image;
+	size_t work_id;
+	size_t work_count;
 public:
 	Camera(Scene& scene, size_t width, size_t height);
 	~Camera();
@@ -24,6 +26,7 @@ public:
 	void save(const char* file_name) const;
 	void resetTable(size_t width, size_t height);
 	void rotate(const Vector3& at, const Matrix& m);
+	int getWork(THREAD_DATA &td);
 private:
 	friend void runRender(THREAD_DATA &td);
 	friend void runRender360(THREAD_DATA &td);

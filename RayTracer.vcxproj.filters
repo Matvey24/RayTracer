@@ -168,6 +168,12 @@
     <ClCompile Include="HardBody.cpp">
       <Filter>Исходные файлы\objects\tools</Filter>
     </ClCompile>
+    <ClCompile Include="LightingMaterial.cpp">
+      <Filter>Исходные файлы\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="MandelBulb.cpp">
+      <Filter>Исходные файлы\objects\simple</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Color.h">
@@ -283,6 +289,12 @@
     </ClInclude>
     <ClInclude Include="HardBody.h">
       <Filter>Файлы заголовков\objects\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="LightingMaterial.h">
+      <Filter>Файлы заголовков\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="MandelBulb.h">
+      <Filter>Файлы заголовков\objects\simple</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

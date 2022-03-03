@@ -254,8 +254,30 @@ void carnellBox() {
         printf("Image %d from %d rendered in %u m, saved in %u m\n", i, pictures, t2 - t, t3 - t2);
     }
 }
+void GPUcomparing() {
+    ColorMaterial sph(0.2, 0xff0000);
+    ColorMaterial fl(0.2, 0x00ffff);
+    ColorMaterial sky(0, 0xffffff);
+
+    Sphere sp(4, 0, 0, 1, &sph);
+    Sphere floor(0, -100, 0, 99, &fl);
+
+    Scene scene(&sky);
+    scene.addModel(sp);
+    scene.addModel(floor);
+
+    Camera cam(scene, 1280, 720);
+    cam.rot.setRotZ(Vector2(M_PI / 8));
+    cam.pos.set(0, 1, 0);
+    long t = clock();
+    cam.render();
+    long t2 = clock();
+    cam.save("images/img1.bmp");
+    long t3 = clock();
+    printf("Image %d from %d rendered in %ld m, saved in %ld m\n", 0, 1, t2 - t, t3 - t2);
+}
 int main()
 {
-    makePicture();
+    GPUcomparing();
     return 0;
 }

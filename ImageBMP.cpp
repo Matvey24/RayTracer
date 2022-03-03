@@ -79,7 +79,7 @@ void ImageBMP::save(FILE* file) const {
 void ImageBMP::set(unsigned x, unsigned y, unsigned rgb) {
 	char a[4];
 	*(unsigned*)a = rgb;
-	char* b = &buf[start + (height - y - 1) * line_len + 3 * x];
+	char* b = &buf[start + y * line_len + 3 * x];
 	b[0] = a[0];
 	b[1] = a[1];
 	b[2] = a[2];

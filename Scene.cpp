@@ -1,5 +1,5 @@
 #include "Scene.h"
-//#define FULL_REFLECTIONS
+#define FULL_REFLECTIONS
 Scene::Scene(MaterialModel* space):space(space) {
 	mod_cap = 10;
 	models = (OperatorModel**)malloc(sizeof(OperatorModel*) * mod_cap);
@@ -11,6 +11,69 @@ Scene::Scene(MaterialModel* space):space(space) {
 Scene::~Scene() {
     free(models);
     free(lights);
+}
+Color Scene::simpleLight(Vector3& pos2, Vector3& dir2, DevelopmentKit& kit) const {
+    Color color(1, 1, 1);
+    Vector3 pos(pos2);
+    Vector3 dir(dir2);
+    for (int i = 0; i < kit.depth; ++i) {
+        struct SurfacePoint surf = intersect(pos, dir, kit);
+        surf.norm.norm();
+        if (!surf.intersects)
+            return color.reflect(space->reflection(dir));
+        else if (surf.self_lighting)
+            return color.reflect(surf.reflection);
+        double scl = dir.scl(surf.norm);
+        double refl = calcReflect(scl, surf.reflective);
+        if (rand() / 32767. > refl) {//diffuse
+            double cosphi = rand() / 32767.;
+            double sinphi = sqrt(1 - cosphi * cosphi);
+            double psi = rand() / 32767. * 2 * M_PI;
+            dir.set(cosphi, sinphi * sin(psi), sinphi * cos(psi));
+            Vector3 dir2(surf.norm * Vector3(1, 0, 0));
+            if (dir2.isZero())
+                dir2.set(0, 1, 0);
+            else
+                dir2.norm();
+            struct Matrix m;
+            m.setRotE(dir2, Vector2(surf.norm.x, sqrt(1 - surf.norm.x * surf.norm.x)));
+            m.transformBack(dir);
+            color = color.reflect(surf.reflection);
+        }
+        else {//reflect
+            dir = dir - surf.norm * (2 * scl);
+        }
+        pos = surf.position + dir * diff;
+    }
+    return Color(0, 0, 0);
+}
+Color Scene::updateDiffuse(Vector3& pos, Vector3& norm, DevelopmentKit& kit, int disc) const {
+    Vector3 dir2(norm * Vector3(1, 0, 0));
+    if (dir2.isZero())
+        dir2.set(0, 1, 0);
+    else
+        dir2.norm();
+    struct Matrix m;
+    m.setRotE(dir2, Vector2(norm.x, sqrt(1 - norm.x * norm.x)));
+    if (disc == 0)
+        disc = 1;
+    int width = sqrt((float)disc);
+    int height = disc / width;
+    double scale = 1. / (width * height);
+    Color color;
+
+    for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
+            double cosphi = (rand() / 32767. + y) / height;
+            double sinphi = sqrt(1 - cosphi * cosphi);
+            double psi = (rand() / 32767. + x) * 2 * M_PI / width;
+            Vector3 dir(cosphi, sinphi * sin(psi), sinphi * cos(psi));
+            m.transformBack(dir);
+            Vector3 pos2 = pos + dir * diff;
+            color += simpleLight(pos2, dir, kit) * scale;
+        }
+    }
+    return color;
 }
 Color Scene::getColorOf(Vector3& pos, Vector3& dir, DevelopmentKit &kit) const {
 	dir.norm();
@@ -26,74 +89,38 @@ Color Scene::getColorOf(Vector3& pos, Vector3& dir, DevelopmentKit &kit) const {
         surf.norm = -surf.norm;
         scl = -scl;
     }
-    double reflective = pow(surf.reflective, -scl);
-    double diffuse = 1 - reflective;
-    if (reflective * kit.scale < diffuse_imp) {
-        diffuse = 1;
-        reflective = 0;
-    }
-    double reflect_scale = kit.scale * reflective;
-    double diffuse_scale = kit.scale * (1 - reflective);
-    if (surf.self_lighting)
-        return surf.reflection;
-    else if (kit.depth != 0) {
+    double refl = calcReflect(scl, surf.reflective);
+    
+    if (kit.depth != 0) {
 #ifdef FULL_REFLECTIONS
-        int disc = diffuse_scale / diffuse_imp;
-        if (disc == 0)
-            disc = 1;
-        int height = (int)sqrt(disc);
-        if(height == 0)
-            height = 1;
-        int width = disc / height;
-        disc = height * width;
-
-
-        double cv = diffuse / disc;
-
-        double scale = kit.scale;
-        kit.scale = diffuse_scale / disc;
-        kit.depth -= 1;
-        Matrix m;
-        Vector3 dir2(surf.norm);
-        dir2 = dir2 * Vector3(1, 0, 0);
-        if (dir2.isZero())
-            dir2.set(0, 1, 0);
-        else
-            dir2.norm();
-        m.setRotE(dir2, Vector2(surf.norm.x, sqrt(1 - surf.norm.x * surf.norm.x)));
-        for (int h = 0; h < height; ++h) {
-            for (int w = 0; w < width; ++w) {
-                double cosphi = (rand() / 32768. * (1 - min_surf_ang) + min_surf_ang + h) / height;
-                double sinphi = sqrt(1 - cosphi * cosphi);
-                double psi = (rand() / 32768. * (1 - min_surf_ang) + min_surf_ang + w) * 2 * M_PI / width;
-                Vector3 dir2(cosphi, sinphi * sin(psi), sinphi * cos(psi));
-                m.transformBack(dir2);
-                Vector3 pos2(surf.position + dir2 * diff);
-                result += surf.reflection.reflect(getColorOf(pos2, dir2, kit)) * cv;
-            }
+        if (refl != 1) {
+            int discDiffuse = (1 - refl) * kit.scale / diffuse_imp;
+            Color diffuse = updateDiffuse(surf.position,
+                surf.norm, kit, discDiffuse);
+            result = surf.reflection.reflect(diffuse) * (1 - refl);
         }
-        kit.scale = reflect_scale;
-        if (kit.scale >= diffuse_imp) {
-            dir2.set(dir - surf.norm * (2 * scl));
-            Vector3 pos2(surf.position + dir2 * diff);
-            result += getColorOf(pos2, dir2, kit) * reflective;
-        }
-        kit.depth += 1;
-        kit.scale = scale;
+        kit.scale *= refl;
+        if (kit.scale < diffuse_imp)
+            return result;
+        kit.depth--;
+        Vector3 dir2(dir - surf.norm * (2 * scl));
+        Vector3 pos2(surf.position + dir2 * diff);
+        result += getColorOf(pos2, dir2, kit) * refl;
+        kit.depth++;
 #else
         //reflections
-        if (reflective != 0) {
+        if (refl != 0) {
             double scale = kit.scale;
-            kit.scale = reflect_scale;
+            kit.scale = refl * scale;
             kit.depth -= 1;
             Vector3 dir2(dir - surf.norm * (2 * scl));
             Vector3 pos2(surf.position + dir2 * diff);
-            result += getColorOf(pos2, dir2, kit) * reflective;
+            result += getColorOf(pos2, dir2, kit) * refl;
             kit.depth += 1;
             kit.scale = scale;
         }
         //lights
-        if (reflective != 1) {
+        if (refl != 1) {
             for (size_t i = 0; i < lights_len; ++i) {
                 Vector3 d(surf.position);
                 Vector3 p(d);
@@ -106,11 +133,11 @@ Color Scene::getColorOf(Vector3& pos, Vector3& dir, DevelopmentKit &kit) const {
                     power *= surf.norm.scl(d);
                     if (power < 0)
                         power = -power;
-                    result += surf.reflection.reflect(c) * (power * diffuse_scale);
+                    result += surf.reflection.reflect(c) * (power * kit.scale * (1 - refl));
                 }
             }
         }
-        result += surf.reflection * (env_light_pow * diffuse_scale);
+        result += surf.reflection * (env_light_pow * kit.scale * (1 - refl));
 #endif
     }
     return result;
@@ -155,4 +182,14 @@ bool Scene::intersects(const Vector3& pos, const Vector3& dir, double max_len, D
             return true;
     }
     return false;
+}
+double Scene::calcReflect(double sclDirNorm, double ref) const{
+    ref = 1 - ref;
+    double cosfi = (sclDirNorm > 0? sclDirNorm:-sclDirNorm);
+    double sinfi = sqrt(1 - cosfi * cosfi);
+    double sinpsi = ref * sinfi;
+    double cospsi = sqrt(1 - sinpsi * sinpsi);
+    double rpe = (cosfi - ref * cospsi) / ((cosfi + ref * cospsi));
+    double rpa = (ref * cosfi - cospsi) / (ref * cosfi + cospsi);
+    return sqrt((rpe * rpe + rpa * rpa) / 2);
 }

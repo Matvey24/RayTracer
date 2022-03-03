@@ -13,9 +13,9 @@ private:
 	size_t mod_cap;
 	MaterialModel* space;
 public:
-	const double diff = 0.001;
+	const double diff = 0.0001;
 	const double min_surf_ang = 0.001;
-	const double diffuse_imp = 1 / 1000.;
+	const double diffuse_imp = 1 / 900.;
 
 	size_t lights_len;
 	LightModel** lights;
@@ -27,6 +27,9 @@ public:
 	void addLight(LightModel& m);
 	bool intersects(const Vector3& pos, const Vector3& dir, double max_len, DevelopmentKit& kit) const;
 private:
+	Color simpleLight(Vector3& pos, Vector3& dir, DevelopmentKit& kit) const;
+	Color updateDiffuse(Vector3& pos, Vector3& norm, DevelopmentKit& kit, int disc) const;
 	SurfacePoint intersect(const Vector3& pos, const Vector3& dir, DevelopmentKit &kit) const;
+	double calcReflect(double sclDirNorm, double ref) const;
 };
 #endif

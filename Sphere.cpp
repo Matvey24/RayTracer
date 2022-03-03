@@ -4,8 +4,8 @@ Sphere::Sphere(double x, double y, double z, double rad, MaterialModel* mm) :
 void Sphere::getNorm(Vector3& internal) {}
 SPoint Sphere::getDistance(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit) {
     double k1 = dir.len2();
-    Vector3 tmp(pos - center);
-    double k2 = -tmp.scl(dir);
+    Vector3 tmp(center - pos);
+    double k2 = tmp.scl(dir);
     double k3 = tmp.len2() - rad2;
     double disk = k2 * k2 - k1 * k3;
     if (disk < 0)
@@ -25,9 +25,8 @@ SPoint Sphere::getDistance(const Vector3& pos, const Vector3& dir, DevelopmentKi
 }
 Segments* Sphere::intersectAll(const Vector3& pos, const Vector3& dir, DevelopmentKit& kit) {
     double k1 = dir.len2();
-    Vector3 tmp(pos);
-    tmp -= center;
-    double k2 = -tmp.scl(dir);
+    Vector3 tmp(center - pos);
+    double k2 = tmp.scl(dir);
     double k3 = tmp.len2() - rad2;
     double disk = k2 * k2 - k1 * k3;
     Segments *s = kit.getSegments();

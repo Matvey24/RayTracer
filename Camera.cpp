@@ -36,7 +36,7 @@ void executeParallel(Camera *cam, void func(THREAD_DATA&)) {
 #ifdef _DEBUG
 	const int tc = 1;
 #else
-	int num = 8;
+	int num = 4;
 	{
 	//	char* chars;
 	//	size_t count = 1;
@@ -75,10 +75,12 @@ void executeParallel(Camera *cam, void func(THREAD_DATA&)) {
 void Camera::render() {
 	table_dist = image->width / tan(FOV / 360 * M_PI) / 2;
 	work_count = image->width;
+	work_id = 0;
 	executeParallel(this, runRender);
 }
 void Camera::render360() {
 	work_count = image->width;
+	work_id = 0;
 	executeParallel(this, runRender360);
 }
 void Camera::save(FILE* file) const {
@@ -102,10 +104,9 @@ void Camera::resetTable(size_t width, size_t height) {
 int Camera::getWork(THREAD_DATA& td) {
 	EnterCriticalSection(sect);
 	td.line = work_id;
-	if(work_id != work_count)
-		work_id++;
+	work_id++;
 	LeaveCriticalSection(sect);
-	return work_id != work_count;
+	return work_id <= work_count;
 }
 void runRender(THREAD_DATA &td) {
 	Camera& c = *td.c;
@@ -117,7 +118,7 @@ void runRender(THREAD_DATA &td) {
 		double dirx = width / 2. - td.line;
 		for (size_t y = 0; y < height; ++y) {
 			Vector3 pos(c.pos);
-			Vector3 dir(c.table_dist, height / 2. - y, dirx);
+			Vector3 dir(c.table_dist, y - height / 2., dirx);
 			c.rot.transformBack(dir);
 			kit.depth = c.max_depth;
 			kit.scale = 1;

@@ -1,5 +1,5 @@
 #include "Scene.h"
-#define FULL_REFLECTIONS
+//#define FULL_REFLECTIONS
 Scene::Scene(MaterialModel* space):space(space) {
 	mod_cap = 10;
 	models = (OperatorModel**)malloc(sizeof(OperatorModel*) * mod_cap);
@@ -109,7 +109,7 @@ Color Scene::getColorOf(Vector3& pos, Vector3& dir, DevelopmentKit &kit) const {
         kit.depth++;
 #else
         //reflections
-        if (refl != 0) {
+        if (refl != 0 && kit.scale > diffuse_imp) {
             double scale = kit.scale;
             kit.scale = refl * scale;
             kit.depth -= 1;
@@ -133,11 +133,12 @@ Color Scene::getColorOf(Vector3& pos, Vector3& dir, DevelopmentKit &kit) const {
                     power *= surf.norm.scl(d);
                     if (power < 0)
                         power = -power;
-                    result += surf.reflection.reflect(c) * (power * kit.scale * (1 - refl));
+                    result += surf.reflection.reflect(c) 
+                        * (power * (1 - refl));
                 }
             }
         }
-        result += surf.reflection * (env_light_pow * kit.scale * (1 - refl));
+        result += surf.reflection * (env_light_pow * (1 - refl));
 #endif
     }
     return result;

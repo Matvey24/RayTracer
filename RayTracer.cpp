@@ -21,15 +21,15 @@
 
 void makePicture() {
     printf("Loading textures..\n");
-    ImageBMP* earth_i = new ImageBMP("textures/8k_earth.bmp");
+    ImageBMP* meet_i = new ImageBMP("textures/meet3.bmp");
     printf("Done. Preparing..\n");
     Matrix mat;
     Vector3 pos;
 
-    SphereTexture stext(earth_i);
+    RectTexture stext(meet_i);
     ColorMaterial rtext(0x0000ff);
     ColorMaterial floamm(0xffff01);
-    ColorMaterial rtmm(0xa1a1ff);
+    ColorMaterial rtmm(0x8181ff);
     ColorMaterial prmmm(0x01ff01);
     ColorMaterial starmm(0xFF5A23);
     ColorMaterial space(Color(1, 1, 1).toRGB());
@@ -39,36 +39,18 @@ void makePicture() {
 
     HalfVolume flo(0, -1.5, 0, &floamm);
 
-    //Tetrahedron st(10, 1/(double)4, 3, 1, &starmm);
-    //Tetrahedron st2(10, 0, 3, 1, &starmm);
-    MandelBulb st(7, 0, 0, 2, &rtmm);
-
+    MandelBulb st(7, 0, 0, &rtmm);
     mat.setRotZ(Vector2(-1, 0));
     pos.set(10, 0, 0);
-    //st2.rotate(pos, mat);
-    Sphere sp(10, 0, 1, 1, &stext);
-    HardBody hbs(1, Vector3(2 / 3., 2 / 3., 2 / 3.), &sp);
-    hbs.w.set(1, 1, 1);
-    hbs.w.norm();
-
-    Rectangle rect(10, 0, -1, 1, 1, 1, &rtext);
-    Pyramid pr(10, 0, -3, 1, 1, 1, &prmmm);
-    //HalfVolume mirr(16, 0, 0, &m);
     flo.rot.setRotZ(Vector2(0, 1));
 
-    DirectionalLight pl(-2, 5, 2, 1, Color(0xffffff));
+    DirectionalLight pl(-2, 5, 2, 0.7, Color(0xffffff));
     Scene scene(&space);
-    Camera camera(scene, 400, 400);
+    Camera camera(scene, 2048, 2048);
     camera.rot.setRotZ(Vector2(M_PI / 7));
     camera.pos = Vector3(5, 1, 0);
-    //camera.FOV = 30;
-    //scene.addModel(sp);
     scene.addModel(flo);
-    //scene.addModel(rect);
-    //scene.addModel(pr);
-    //scene.addModel(mirr);
     scene.addModel(st);
-    //scene.addModel(st2);
     scene.addLight(pl);
     
     int fps = 1;
@@ -89,7 +71,7 @@ void makePicture() {
 
         //hbs.update(delta);
     }
-    delete(earth_i);
+    delete(stext.im);
 }
 void makePicture2() {
     printf("Loading textures..\n");
@@ -278,6 +260,6 @@ void GPUcomparing() {
 }
 int main()
 {
-    GPUcomparing();
+    makePicture();
     return 0;
 }

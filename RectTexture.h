@@ -5,7 +5,7 @@ class RectTexture:public MaterialModel
 {
 public:
 	ImageBMP* im;
-	double main_ref = 0.05;
+	double main_ref = 0.2;
 	RectTexture(ImageBMP* image);
 	double reflective(const Vector3 & inter);
 	Color reflection(const Vector3 & inter);

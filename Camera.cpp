@@ -6,7 +6,7 @@ RTL_CRITICAL_SECTION* sect;
 Camera::Camera(Scene& scene, size_t width, size_t height):scene(scene), image(NULL) {
 	rot.setPrimary();
 	FOV = 60;
-	max_depth = 10;
+	max_depth = 20;
 	resetTable(width, height);
 	sect = new RTL_CRITICAL_SECTION;
 	InitializeCriticalSection(sect);
@@ -38,11 +38,11 @@ void executeParallel(Camera *cam, void func(THREAD_DATA&)) {
 #else
 	int num = 4;
 	{
-	//	char* chars;
-	//	size_t count = 1;
+		//char* chars;
+		//size_t count = 1;
 		//_getenv_s(&chars, &count, "NUMBER_OF_PROCESSORS");
-	//	sscanf(chars, "%d", &num);
-	//	free(chars);
+		//sscanf(chars, "%d", &num);
+		//free(chars);
 	}
 	const int tc = num;
 #endif

@@ -4,7 +4,7 @@ class ColorMaterial:public MaterialModel
 {
 public:
 	Color main_c;
-	double main_ref = 0.02;
+	double main_ref = 0.1;
 	ColorMaterial(unsigned color);
 	ColorMaterial(Color &c);
 	ColorMaterial(double reflective, unsigned color);

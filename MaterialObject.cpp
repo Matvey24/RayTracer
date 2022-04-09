@@ -14,16 +14,14 @@ SurfacePoint MaterialObject::getPoint(const Vector3& pos, const Vector3& dir, do
     saveTo.position = tmp;
     tmp -= center;
     rot.transform(tmp);
-    saveTo.refraction = mm->refraction;
-    saveTo.transparency = mm->transparency;
-    saveTo.reflective = mm->reflective(tmp);
+    saveTo.refraction = mm->refraction(tmp);
     saveTo.self_lighting = mm->self_lighting;
     if (mm->improved) {
         Vector3 dir2(dir);
         rot.transform(dir2);
-        saveTo.reflection = mm->improvedReflection(tmp, dir2, kit);
+        saveTo.diffuse = mm->improvedDiffuse(tmp, dir2, kit);
     }else
-        saveTo.reflection = mm->reflection(tmp);
+        saveTo.diffuse = mm->diffuse(tmp);
 
     saveTo.norm.set(tmp);
     getNorm(saveTo.norm);

@@ -1,7 +1,9 @@
+#include<ctime>
 #include "Camera.h"
 #include "strsafe.h"
 #include "tchar.h"
 #include "windows.h"
+
 RTL_CRITICAL_SECTION* sect;
 Camera::Camera(Scene& scene, size_t width, size_t height):scene(scene), image(NULL) {
 	rot.setPrimary();
@@ -82,6 +84,23 @@ void Camera::render360() {
 	work_count = image->width;
 	work_id = 0;
 	executeParallel(this, runRender360);
+}
+void Camera::renderVideo(int frames, const char file_format[], void update()) {
+	printf("Begun rendering %d frames\n", frames);
+
+	for (int i = 0; i < frames; ++i) {
+		unsigned t = clock();
+		render();
+		unsigned t2 = clock();
+		char arr[256];
+		sprintf_s(arr, file_format, i);
+		save(arr);
+
+		unsigned t3 = clock();
+		printf("Frame %d from %d rendered in %u m, saved in %u m\n", i, frames, t2 - t, t3 - t2);
+
+		update();
+	}
 }
 void Camera::save(FILE* file) const {
 	image->save(file);

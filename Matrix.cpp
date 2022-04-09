@@ -16,7 +16,7 @@ void Matrix::transform(Vector3& vec) const{
     z = c1 * vec.x + c2 * vec.y + c3 * vec.z;
     vec.set(x, y, z);
 }
-void Matrix::set(const Matrix& oth) {
+const Matrix& Matrix::set(const Matrix& oth) {
     a1 = oth.a1;
     a2 = oth.a2;
     a3 = oth.a3;
@@ -26,6 +26,7 @@ void Matrix::set(const Matrix& oth) {
     c1 = oth.c1;
     c2 = oth.c2;
     c3 = oth.c3;
+    return *this;
 }
 double Matrix::det() const {
     return a1 * b2 * c3 + a2 * b3 * c1 + a3 * b1 * c2 - a1 * b3 * c2 - a2 * b1 * c3 - a3 * b2 * c1;
@@ -40,7 +41,7 @@ void Matrix::transformBack(Vector3& vec) const{
     z = a3 * vec.x + b3 * vec.y + c3 * vec.z;
     vec.set(x, y, z);
 }
-void Matrix::set(double a1, double a2, double a3,
+const Matrix& Matrix::set(double a1, double a2, double a3,
     double b1, double b2, double b3,
     double c1, double c2, double c3) {
     this->a1 = a1;
@@ -52,20 +53,21 @@ void Matrix::set(double a1, double a2, double a3,
     this->c1 = c1;
     this->c2 = c2;
     this->c3 = c3;
+    return *this;
 }
-void Matrix::setPrimary() {
-    set(1, 0, 0, 0, 1, 0, 0, 0, 1);
+const Matrix& Matrix::setPrimary() {
+    return set(1, 0, 0, 0, 1, 0, 0, 0, 1);
 }
-void Matrix::setRotX(Vector2 ang) {
-    set(1, 0, 0, 0, ang.x, -ang.y, 0, ang.y, ang.x);
+const Matrix& Matrix::setRotX(Vector2 ang) {
+    return set(1, 0, 0, 0, ang.x, -ang.y, 0, ang.y, ang.x);
 }
-void Matrix::setRotY(Vector2 ang) {
-    set(ang.x, 0, ang.y, 0, 1, 0, -ang.y, 0, ang.x);
+const Matrix& Matrix::setRotY(Vector2 ang) {
+    return set(ang.x, 0, ang.y, 0, 1, 0, -ang.y, 0, ang.x);
 }
-void Matrix::setRotZ(Vector2 ang) {
-    set(ang.x, -ang.y, 0, ang.y, ang.x, 0, 0, 0, 1);
+const Matrix& Matrix::setRotZ(Vector2 ang) {
+    return set(ang.x, -ang.y, 0, ang.y, ang.x, 0, 0, 0, 1);
 }
-void Matrix::setRotE(Vector3 at, Vector2 ang) {
+const Matrix& Matrix::setRotE(Vector3 at, Vector2 ang) {
     a1 = (1 - ang.x) * at.x * at.x + ang.x;
     a2 = (1 - ang.x) * at.x * at.y - ang.y * at.z;
     a3 = (1 - ang.x) * at.x * at.z + ang.y * at.y;

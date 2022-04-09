@@ -22,6 +22,7 @@ public:
 	~Camera();
 	void render();
 	void render360();
+	void renderVideo(int frames, const char file_format[], void update());
 	void save(FILE* file) const;
 	void save(const char* file_name) const;
 	void resetTable(size_t width, size_t height);

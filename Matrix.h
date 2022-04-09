@@ -15,15 +15,16 @@ public:
 	void mult(double val);
 	void transform(Vector3& vec) const;
 	void transformBack(Vector3& vec) const;
-	void set(double a1, double a2, double a3,
+	const Matrix& set(double a1, double a2, double a3,
 		double b1, double b2, double b3,
 		double c1, double c2, double c3);
-	void set(const Matrix& oth);
-	void setPrimary();
-	void setRotX(Vector2 ang);
-	void setRotY(Vector2 ang);
-	void setRotZ(Vector2 ang);
-	void setRotE(Vector3 at, Vector2 ang);
+	const Matrix& set(const Matrix& oth);
+	const Matrix& setPrimary();
+	const Matrix& setRotX(Vector2 ang);
+	const Matrix& setRotY(Vector2 ang);
+	const Matrix& setRotZ(Vector2 ang);
+	const Matrix& setRotE(Vector3 at, Vector2 ang);
+
 	void setRotOf(Vector3 ang);
 	void reverse();
 };

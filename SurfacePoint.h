@@ -7,11 +7,10 @@ class SurfacePoint {
 public:
 	bool intersects = false;
 	bool self_lighting = false;
+	bool trans_for_diffuse = false;
 	Vector3 position;
 	Vector3 norm;
 	double refraction = 0;
-	Color transparency;
-	double reflective = 0;
-	Color reflection;
+	Color diffuse;
 };
 #endif

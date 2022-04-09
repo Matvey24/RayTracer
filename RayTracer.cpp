@@ -1,22 +1,17 @@
-﻿#include<ctime>
-
+﻿
 #include "Camera.h"
-#include "Wall.h"
-#include "Pyramid.h"
+#include "Material.h"
+#include "Texture.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
-#include "ColorMaterial.h"
-#include "LightingMaterial.h"
-#include "Mirror.h"
+#include "Wall.h"
+#include "Pyramid.h"
 #include "Tetrahedron.h"
 #include "Subtraction.h"
-#include "RectTexture.h"
-#include "SphereTexture.h"
 #include "MandelBulb.h"
 //#include "Thor.h"
 //#include "ThorTexture.h"
 #include "Rectangle.h"
-#include "DoubleTexturedSphere.h"
 #include "HardBody.h"
 
 void makePicture() {
@@ -26,52 +21,41 @@ void makePicture() {
     Matrix mat;
     Vector3 pos;
 
-    RectTexture stext(meet_i);
-    ColorMaterial rtext(0x0000ff);
-    ColorMaterial floamm(0xffff01);
-    ColorMaterial rtmm(0x8181ff);
-    ColorMaterial prmmm(0x01ff01);
-    ColorMaterial starmm(0xFF5A23);
-    ColorMaterial space(Color(1, 1, 1).toRGB());
-    
-    Mirror m;
+    //RectTexture stext(meet_i);
+    Texture meet = Textures::makeSpherical(meet_i);
+
+    Material rtext = Materials::defColor(0x0000ff);
+    Material floamm = Materials::defColor(0xffff01);
+    Material rtmm = Materials::defColor(0x8181ff);
+    Material prmmm = Materials::defColor(0x01ff01);
+    Material starmm = Materials::defColor(0xFF5A23);
+    Material space = Materials::defColor(0xffffff);
+
+    Material m = Materials::mirror();
 
 
     HalfVolume flo(0, -1.5, 0, &floamm);
 
-    MandelBulb st(7, 0, 0, &rtmm);
+    Sphere st(7, 0, 0, 1, &meet);
     mat.setRotZ(Vector2(-1, 0));
     pos.set(10, 0, 0);
     flo.rot.setRotZ(Vector2(0, 1));
 
-    DirectionalLight pl(-2, 5, 2, 0.7, Color(0xffffff));
+    DirectionalLight pl(-2, 5, 2, 0.7, 0xffffff);
     Scene scene(&space);
-    Camera camera(scene, 2048, 2048);
+    Camera camera(scene, 1024, 1024);
     camera.rot.setRotZ(Vector2(M_PI / 7));
     camera.pos = Vector3(5, 1, 0);
     scene.addModel(flo);
     scene.addModel(st);
     scene.addLight(pl);
-    
+
     int fps = 1;
     double seconds = 1;
     int pictures = (int)(seconds * fps);
     double delta = (2 * M_PI) / pictures;
-    
-    for(int i = 0; i < pictures; ++i){
-        unsigned t = clock();
-        camera.render();
-        unsigned t2 = clock();
-        char arr[20];
-        sprintf_s(arr, "images\\img%d.bmp", i);
-        camera.save(arr);
 
-        unsigned t3 = clock();
-        printf("Image %d from %d rendered in %u m, saved in %u m\n", i, pictures, t2 - t, t3 - t2);
-
-        //hbs.update(delta);
-    }
-    delete(stext.im);
+    camera.renderVideo(1, "images/img%d.bmp", []() {});
 }
 void makePicture2() {
     printf("Loading textures..\n");
@@ -88,14 +72,14 @@ void makePicture2() {
     //ThorTexture spt(earth_t, 1);
     //Thor sp(0, 0, 0, 0.4, 1, &spt);
     //SphereTexture space(space_t);
-    ColorMaterial SKY(Color(0.4, 0.4, 1).toRGB());
+    Material SKY = Materials::defColor(Color(0.4, 0.4, 1).toRGB());
     Scene s(&SKY);
 
     //SphereTexture eart_d(earth_t);
     //SphereTexture eart_n(earth_n);
-    ColorMaterial GREEN(0x02ff02);
-    ColorMaterial BLUE(0x0202ff);
-    ColorMaterial YELLOW(0xffff02);
+    Material GREEN = Materials::defColor(0x02ff02);
+    Material BLUE = Materials::defColor(0x0202ff);
+    Material YELLOW = Materials::defColor(0xffff02);
 
     Rectangle hor1(1, 1, 0, 0.5, 0.5, 2, &GREEN);
     Rectangle ver1(1, -0.5, 0, 0.5, 1, 0.5, &BLUE);
@@ -154,38 +138,25 @@ void makePicture2() {
     //mat = mat * mat3;
     //mat2.setRotY(Vector2(-delta));
 
-
-    for (int i = 0; i < pictures; ++i) {
-        unsigned t = clock();
-        cam.render();
-        unsigned t2 = clock();
-        char arr[20];
-        sprintf_s(arr, "images\\img%d.bmp", i);
-        cam.save(arr);
-
-        unsigned t3 = clock();
-        printf("Image %d from %d rendered in %u m, saved in %u m\n", i, pictures, t2 - t, t3 - t2);
-
-        //mat2.transformBack(cam.pos);
-        //cam.rot = cam.rot * mat2;
-        //earth.rotate(Vector3(0, 0, 0), mat);
-        for (int j = 0; j < 100; ++j) {
-            hsph1.update(delta / 100);
-            hsph2.update(delta / 100);
-            hsph3.update(delta / 100);
-        }
-    }
+    cam.renderVideo(pictures, "images\\img%d.bmp",
+        []() {});
+            //for (int j = 0; j < 100; ++j) {
+            //    hsph1.update(delta / 100);
+            //    hsph2.update(delta / 100);
+            //    hsph3.update(delta / 100);
+            //}
+        //});
     //delete(earth_t);
     //delete(space_t);
     //delete(earth_n);
 }
 void carnellBox() {
     printf("Prepairing...\n");
-    ColorMaterial orange(0, 0xFF5A23);
-    ColorMaterial blue(0, 0x0000FF);
-    ColorMaterial white(0, 0xFFFFFF);
-    ColorMaterial black(0);
-    LightingMaterial lighting(0xFFFFFF, 10);
+    Material orange(0, 0xFF5A23);
+    Material blue(0, 0x0000FF);
+    Material white(0, 0xFFFFFF);
+    Material black = Materials::defColor(0);
+    Material lighting = Materials::light(0xFFFFFF, 10);
 
     Matrix m;
     HalfVolume floor(0, 0, 0, &white);
@@ -224,22 +195,12 @@ void carnellBox() {
     int pictures = (int)(seconds * fps);
     double delta = (2 * M_PI) / pictures;
 
-    for (int i = 0; i < pictures; ++i) {
-        unsigned t = clock();
-        cam.render();
-        unsigned t2 = clock();
-        char arr[20];
-        sprintf_s(arr, "images\\img%d.bmp", i);
-        cam.save(arr);
-
-        unsigned t3 = clock();
-        printf("Image %d from %d rendered in %u m, saved in %u m\n", i, pictures, t2 - t, t3 - t2);
-    }
+    cam.renderVideo(pictures, "images\\img%d.bmp", []() {});
 }
 void GPUcomparing() {
-    ColorMaterial sph(0.2, 0xff0000);
-    ColorMaterial fl(0.2, 0x00ffff);
-    ColorMaterial sky(0, 0xffffff);
+    Material sph(0.2, 0xff0000);
+    Material fl(0.2, 0x00ffff);
+    Material sky(0, 0xffffff);
 
     Sphere sp(4, 0, 0, 1, &sph);
     Sphere floor(0, -100, 0, 99, &fl);
@@ -251,12 +212,8 @@ void GPUcomparing() {
     Camera cam(scene, 1280, 720);
     cam.rot.setRotZ(Vector2(M_PI / 8));
     cam.pos.set(0, 1, 0);
-    long t = clock();
-    cam.render();
-    long t2 = clock();
-    cam.save("images/img1.bmp");
-    long t3 = clock();
-    printf("Image %d from %d rendered in %ld m, saved in %ld m\n", 0, 1, t2 - t, t3 - t2);
+    
+    cam.renderVideo(1, "images\\img%d.bmp", []() {});
 }
 int main()
 {

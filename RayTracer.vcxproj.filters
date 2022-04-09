@@ -120,17 +120,11 @@
     <ClCompile Include="ComplexModel.cpp">
       <Filter>Исходные файлы\objects\tools</Filter>
     </ClCompile>
-    <ClCompile Include="ColorMaterial.cpp">
-      <Filter>Исходные файлы\materials</Filter>
-    </ClCompile>
     <ClCompile Include="Pyramid.cpp">
       <Filter>Исходные файлы\objects\complex</Filter>
     </ClCompile>
     <ClCompile Include="HalfVolume.cpp">
       <Filter>Исходные файлы\objects\simple</Filter>
-    </ClCompile>
-    <ClCompile Include="Mirror.cpp">
-      <Filter>Исходные файлы\materials</Filter>
     </ClCompile>
     <ClCompile Include="Tetrahedron.cpp">
       <Filter>Исходные файлы\objects\complex</Filter>
@@ -141,26 +135,11 @@
     <ClCompile Include="Subtraction.cpp">
       <Filter>Исходные файлы\objects\tools</Filter>
     </ClCompile>
-    <ClCompile Include="ImageBMP.cpp">
-      <Filter>Исходные файлы\materials</Filter>
-    </ClCompile>
-    <ClCompile Include="RectTexture.cpp">
-      <Filter>Исходные файлы\materials</Filter>
-    </ClCompile>
-    <ClCompile Include="SphereTexture.cpp">
-      <Filter>Исходные файлы\materials</Filter>
-    </ClCompile>
     <ClCompile Include="Thor.cpp">
       <Filter>Исходные файлы\objects\simple</Filter>
     </ClCompile>
     <ClCompile Include="Equation.cpp">
       <Filter>Исходные файлы\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="ThorTexture.cpp">
-      <Filter>Исходные файлы\materials</Filter>
-    </ClCompile>
-    <ClCompile Include="DoubleTexturedSphere.cpp">
-      <Filter>Исходные файлы\objects\simple</Filter>
     </ClCompile>
     <ClCompile Include="Rectangle.cpp">
       <Filter>Исходные файлы\objects\simple</Filter>
@@ -168,11 +147,17 @@
     <ClCompile Include="HardBody.cpp">
       <Filter>Исходные файлы\objects\tools</Filter>
     </ClCompile>
-    <ClCompile Include="LightingMaterial.cpp">
-      <Filter>Исходные файлы\materials</Filter>
-    </ClCompile>
     <ClCompile Include="MandelBulb.cpp">
       <Filter>Исходные файлы\objects\simple</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageBMP.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Исходные файлы\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Исходные файлы\materials</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,17 +224,11 @@
     <ClInclude Include="ComplexModel.h">
       <Filter>Файлы заголовков\objects\tools</Filter>
     </ClInclude>
-    <ClInclude Include="ColorMaterial.h">
-      <Filter>Файлы заголовков\materials</Filter>
-    </ClInclude>
     <ClInclude Include="Pyramid.h">
       <Filter>Файлы заголовков\objects\complex</Filter>
     </ClInclude>
     <ClInclude Include="HalfVolume.h">
       <Filter>Файлы заголовков\objects\simple</Filter>
-    </ClInclude>
-    <ClInclude Include="Mirror.h">
-      <Filter>Файлы заголовков\materials</Filter>
     </ClInclude>
     <ClInclude Include="Tetrahedron.h">
       <Filter>Файлы заголовков\objects\complex</Filter>
@@ -260,29 +239,14 @@
     <ClInclude Include="Subtraction.h">
       <Filter>Файлы заголовков\objects\tools</Filter>
     </ClInclude>
-    <ClInclude Include="ImageBMP.h">
-      <Filter>Файлы заголовков\materials</Filter>
-    </ClInclude>
-    <ClInclude Include="RectTexture.h">
-      <Filter>Файлы заголовков\materials</Filter>
-    </ClInclude>
-    <ClInclude Include="SphereTexture.h">
-      <Filter>Файлы заголовков\materials</Filter>
-    </ClInclude>
     <ClInclude Include="Thor.h">
       <Filter>Файлы заголовков\objects\simple</Filter>
     </ClInclude>
     <ClInclude Include="Equation.h">
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
-    <ClInclude Include="ThorTexture.h">
-      <Filter>Файлы заголовков\materials</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectModel.h">
       <Filter>Файлы заголовков\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="DoubleTexturedSphere.h">
-      <Filter>Файлы заголовков\objects\simple</Filter>
     </ClInclude>
     <ClInclude Include="Rectangle.h">
       <Filter>Файлы заголовков\objects\simple</Filter>
@@ -290,11 +254,17 @@
     <ClInclude Include="HardBody.h">
       <Filter>Файлы заголовков\objects\tools</Filter>
     </ClInclude>
-    <ClInclude Include="LightingMaterial.h">
-      <Filter>Файлы заголовков\materials</Filter>
-    </ClInclude>
     <ClInclude Include="MandelBulb.h">
       <Filter>Файлы заголовков\objects\simple</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageBMP.h">
+      <Filter>Файлы заголовков\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Файлы заголовков\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Файлы заголовков\materials</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
